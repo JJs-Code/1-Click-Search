@@ -1,0 +1,38 @@
+{
+    "manifest_version": 3,
+    "name": "1 Click Search: Multi Search Home Page",
+    "version": "0.2.0",
+    "permissions": [
+        "search",
+        "tabs",
+        "storage"
+    ],
+    "background": {
+        "service_worker": "js/background.js"
+    },
+    "description": "A clean New Tab page with your default search, custom site search bars, a live clock, bookmarks, and custom backgrounds.",
+    "icons": {
+        "16": "Logo/Logo_Black_16x16.png",
+        "32": "Logo/Logo_Black_32x32.png",
+        "64": "Logo/Logo_Black_64x64.png",
+        "128": "Logo/Logo_Black_128x128.png",
+        "256": "Logo/Logo_Black_256x256.png",
+        "512": "Logo/Logo_Black.png"
+    },
+    "action": {
+        "default_icon": {
+            "16": "Logo/Logo_White_16x16.png",
+            "32": "Logo/Logo_White_32x32.png",
+            "64": "Logo/Logo_White_64x64.png",
+            "128": "Logo/Logo_White_128x128.png",
+            "256": "Logo/Logo_White_256x256.png"
+        }
+    },
+    "chrome_url_overrides": {
+        "newtab": "main.html"
+    },
+    "options_ui": {
+        "page": "settings.html",
+        "open_in_tab": true
+    }
+}

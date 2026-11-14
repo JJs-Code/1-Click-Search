@@ -1,0 +1,53 @@
+name: Update Backgrounds List
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backgrounds/*'
+      - '!backgrounds/backgrounds.json'
+      - '!backgrounds/thumbs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-backgrounds-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate backgrounds/backgrounds.json
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const dir = 'backgrounds';
+            if (!fs.existsSync(dir)) {
+              console.log('No backgrounds directory found.');
+              process.exit(0);
+            }
+            const imageExts = /\.(jpe?g|png|webp|gif|avif)$/i;
+            const entries = fs.readdirSync(dir, { withFileTypes: true })
+              .filter(d => d.isFile() && imageExts.test(d.name))
+              .map(d => d.name.replace(/\.jpg$/i, ''))
+              .sort((a, b) => a.localeCompare(b, 'en'));
+            fs.writeFileSync(path.join(dir, 'backgrounds.json'), JSON.stringify(entries, null, 2) + '\n');
+            console.log('Generated backgrounds.json with', entries.length, 'entries.');
+          "
+
+      - name: Commit and push if changed
+        run: |
+          if [ -n "$(git status --porcelain backgrounds/backgrounds.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add backgrounds/backgrounds.json
+            git commit -m "chore: update backgrounds.json [skip ci]"
+            git push
+          else
+            echo "No changes to backgrounds.json"
+          fi

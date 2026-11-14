@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home: 1 Click Search</title>
+    <link rel="icon" type="image/svg+xml" href="Logo/Logo.svg">
+
+    <!--external files-->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/search.css">
+    <script src="js/reference.js"></script>
+</head>
+
+<body>
+    <!--background-->
+    <div id="backgroundImage"></div>
+    <script src="js/main-background.js"></script>
+
+    <!--heading-->
+    <div id="headerBar">
+        <div id="deleteBinButton" title="Drag here to delete">
+            <svg id="deleteBinSvg" class="buttonMenu icon">
+                <use href="icons/delete.svg#icon"></use>
+            </svg>
+        </div>
+        <h1 id="headingContainer">
+            <svg id="headerLogo" class="innerHeading">
+                <use href="icons/logo.svg#icon"></use>
+            </svg>
+            <span id="headerText" class="innerHeading">1 Click Search</span>
+        </h1>
+        <a id="settingsPageButton" href="settings.html#search" target="_blank" title="settings">
+            <svg id="settingsSvg" class="buttonMenu icon">
+                <use href="icons/settings.svg#icon"></use>
+            </svg>
+        </a>
+    </div>
+
+    <!--search bars-->
+    <div id="searchBarContainer">
+        <div id="searchBars"></div>
+    </div>
+
+    <!--left bookmarks-->
+    <div id="bookmarkContainerLeft" class="linkLeft dynamicHide">
+        <div id="bookmarkAreaLeft"></div>
+    </div>
+
+    <!--right bookmarks-->
+    <div id="bookmarkContainerRight" class="linkRight dynamicHide">
+        <div id="bookmarkAreaRight"></div>
+    </div>
+
+    <!--external scripts-->
+    <script src="js/main-search.js"></script>
+</body>
+</html>

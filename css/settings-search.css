@@ -1,0 +1,390 @@
+/*vars*/
+
+:root {
+    --inputWidth: 700px;
+    --nameCut: 275px;
+    --nameMaxWidth: 261px;
+}
+
+/* Page */
+
+#searchTitle {
+    padding-bottom: 0;
+}
+#bookmarkSides {
+    justify-self: center;
+    margin: auto;
+    width: 100%;
+    height: 50px;
+    max-width: 700px;
+    background-color: #282727;
+    margin: 20px auto;
+    border-radius: 8px;
+    position: relative;
+}
+#searchMessageContainer, #bookmarkMessageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+#searchMessageContainer .searchMessage,
+#bookmarkMessageContainer .bookmarkMessage {
+    margin: 5px auto 10px auto;
+}
+
+.searchMessage, .bookmarkMessage {
+    font-size: 12pt;
+    font-weight: 500;
+    font-family: courier, monospace;
+}
+#warningMessage, #bookmarkWarningMessage {
+    color: red;
+}
+.syntaxMessage, .bookmarkSyntaxMessage {
+    color: orange;
+}
+#savedMessage, #bookmarkSavedMessage {
+    color: #e0fcbe;
+}
+.warningFlash, .bookmarkWarningFlash {
+    animation: flashWhite-Red 0.5s;
+}
+@keyframes flashWhite-Red {
+    0% {color: white;}
+    20% {color: white;}
+    100% {color: red;}
+}
+.syntaxFlash, .bookmarkSyntaxFlash {
+    animation: flashWhite-Orange 0.5s;
+}
+@keyframes flashWhite-Orange {
+    0% {color: white;}
+    20% {color: white;}
+    100% {color: orange;}
+}
+.savedFlash, .bookmarkSavedFlash {
+    animation: flashWhite-Green 0.5s;
+}
+@keyframes flashWhite-Green {
+    0% {color: #79ba47;}
+    20% {color: #79ba47;}
+    100% {color: #e0fcbe;}
+}
+.inactive {
+    opacity: 70%;
+}
+
+/* BUTTONS */
+
+button {
+    margin: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--font);
+    font-size: 1em;
+    border-radius: 20px;
+    border: 2px solid;
+    padding: 0px;
+    cursor: pointer;
+}
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 50px;
+    width: 160px;    
+    padding-right: 20px;
+    padding-left: 20px;
+    margin: 0;
+}
+#actionButtonContainer, #bookmarkButtonContainer {
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+.searchContainerButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+.searchButton, .bookmarkButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 6px;
+    margin: 0;
+}
+.actionButton {
+    height: 35.2px;
+    width:  35.2px;
+}
+.buttonGreen {
+    background-color: var(--green);
+    border-color: var(--green) #517d2f #517d2f var(--green);
+}
+.buttonGreen:active {
+    border-color: #517d2f var(--green) var(--green) #517d2f;
+}
+.buttonRed {
+    background-color: var(--red);
+    border-color: var(--red) #7a3131 #7a3131 var(--red);
+}
+.buttonRed:active {
+    border-color: #7a3131 var(--red) var(--red) #7a3131;
+}
+.buttonBlue {
+    background-color: var(--blue);
+    border-color: var(--blue) #2d5ba9 #2d5ba9 var(--blue);
+}
+.buttonBlue:active {
+    border-color: #2d5ba9 var(--blue) var(--blue) #2d5ba9;
+}
+.buttonWhite {
+    background-color: white;
+    border-color: white #b8b8b8 #b8b8b8 white;
+    color: black;
+}
+.buttonWhite:active {
+    border-color: #b8b8b8 white white #b8b8b8;
+}
+.buttonSides {
+    height: 100%;
+    background-color: #00000000;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.buttonSides.activeSide {
+    background-color: var(--blue) !important;
+}
+.buttonSides:hover {
+    background-color: #555555;
+}
+#buttonSidesSwap {
+    padding: 20px;
+    border-radius: 100px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: solid;
+    border-width: 5px;
+    border-color: #41403f;
+    background-color: #282727;
+    z-index: 10;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#buttonSidesSwap:hover {
+    background-color: #555555;
+}
+#buttonSidesSwap.spinClick {
+    animation: swapRotateOnce 0.4s ease forwards;
+}
+@keyframes swapRotateOnce {
+    0%   { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(180deg); }
+}
+.buttonReorder, .bookmarkButtonReorder, .settingsCardFavicon {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.buttonReorder:active, .bookmarkButtonReorder:active, .settingsCardFavicon:active,
+body.is-dragging,
+body.is-dragging * {
+    cursor: grabbing !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+.searchContainer.is-dragged-item,
+.bookmarkContainer.is-dragged-item {
+    opacity: 1 !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
+}
+.drag-placeholder {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* SEARCH & BOOKMARK CONTAINERS */
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: var(--dark2);
+    border-radius: 15px;
+    width: calc(100%);
+    max-width: 1450px;
+    padding: 10px 15px;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px; 
+    box-sizing: border-box;
+}
+.bookmarkContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background-color: var(--dark2);
+    border-radius: 15px;
+    width: calc(100%);
+    max-width: 1450px;
+    padding: 10px 15px;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px; 
+    box-sizing: border-box;
+}
+
+.searchContainer .settingsCardFavicon {
+    order: 1;
+}
+.searchContainer .searchName {
+    order: 2;
+}
+.searchContainer .searchContainerButton {
+    order: 3;
+}
+.searchContainer .searchUrl {
+    order: 4;
+}
+@media (min-width: 1500px) {
+    .searchContainer .searchUrl {
+        order: 3;
+    }
+    .searchContainer .searchContainerButton {
+        order: 4;
+    }
+}
+
+/* INPUTS */
+
+.searchInput {
+    box-sizing: border-box;
+    border: 2px solid var(--dark1);
+    height: 30px;
+    border-radius: 10px;
+    background-color: var(--light);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.searchInput:focus {
+    outline: none;
+}
+.searchUrl {
+    width: 100%;
+    flex-basis: 100%;
+    box-sizing: border-box;
+}
+.bookmarkUrl {
+    width: 100%;
+    max-width: 100%;
+}
+.searchName {
+    flex: 1 1 0;
+    min-width: 150px;
+    box-sizing: border-box;
+}
+.bookmarkName {
+    width: calc(100% / 2.5);
+    max-width: 300px;
+}
+
+/* Pinned Browser Default Search Banner */
+.defaultSearchBanner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark2);
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin: 10px auto;
+    width: calc(100%);
+    max-width: 1450px;
+    min-height: 55px;
+    box-sizing: border-box;
+}
+
+.defaultSearchLeft {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.defaultSearchIcon,
+.settingsCardFavicon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.defaultSearchTitle {
+    font-size: 14pt;
+    font-weight: 600;
+}
+
+.defaultSearchRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    font-size: 11pt;
+    color: #cccccc;
+    text-align: right;
+    max-width: 65%;
+}
+
+#btnRedetectDefaultEngine {
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+#btnRedetectDefaultEngine svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: #e3e3e3;
+}
+
+@keyframes spinCycle {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinRotating {
+    animation: spinCycle 0.8s linear infinite;
+}
+
+.defaultSearchRight a {
+    color: var(--blue);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: normal;
+}

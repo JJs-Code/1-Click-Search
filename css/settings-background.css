@@ -1,0 +1,101 @@
+/* Custom Background Settings Styles */
+
+#customBackgroundContainer {
+    margin-right: 0;
+}
+
+#backgroundThumbnailsCustom {
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#background-custom {
+    background-color: var(--dark2);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#customBackgroundBorder {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100%;
+    width: 100%;
+}
+
+#background-custom.no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#background-custom.no-image #customBackgroundBorder {
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+    box-sizing: border-box;
+    margin: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    border-radius: 4px;
+}
+
+#background-custom.no-image #customBackgroundTitle {
+    background: none;
+    justify-content: center;
+    padding: 0;
+    font-size: 14px;
+    color: #cccccc;
+    filter: none;
+}
+
+#customBackgroundControls {
+    width: 260px;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+#customBackgroundInput {
+    box-sizing: border-box;
+    width: 100%;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 10.5pt;
+    padding: 6px 10px;
+    background-color: var(--light);
+    color: var(--dark1);
+    border: 2px solid var(--dark1);
+    margin: 0;
+}
+
+#customBackgroundInput:focus {
+    outline: none;
+    border-color: var(--blue);
+}
+
+#customBackgroundButtonsRow {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+#buttonUploadCustomBg,
+#buttonClearCustomBg {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+    margin: 0;
+    height: 34px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    font-size: 0.9em;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}

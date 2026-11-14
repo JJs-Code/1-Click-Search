@@ -1,0 +1,713 @@
+/*vars*/
+
+:root {
+    --AIChatDiameter: 140px;
+}
+
+/* Header Elements */
+
+#headerBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: none;
+    z-index: 400;
+    pointer-events: none;
+}
+#headerBar > * {
+    pointer-events: auto;
+}
+
+.no-header #headingContainer,
+#headingContainer.viewport-hidden {
+    display: none !important;
+}
+
+@media (max-width: 1360px) {
+    #headingContainer {
+        display: none !important;
+    }
+}
+
+#headingContainer {
+    position: absolute;
+    top: 14px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    color: white;
+    font-size: 25pt;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    transition: opacity 0.2s ease;
+}
+body.is-dragging #headingContainer,
+body.walkthrough-show-bin #headingContainer {
+    opacity: 0;
+    pointer-events: none;
+}
+#headerLogo {
+    height: 1.3em;
+    width: 1.3em;
+    fill: currentColor;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.65));
+}
+
+/* Solid Background Contrast Adjustments */
+body.light-background #headerBar,
+body.dark-solid-background #headerBar {
+    background: none;
+}
+body.light-background #headingContainer {
+    color: var(--dark1);
+    text-shadow: none;
+}
+body.light-background #headerLogo {
+    fill: var(--dark1);
+    filter: none;
+}
+body.light-background #settingsSvg,
+body.light-background #deleteBinSvg {
+    fill: var(--dark1);
+    filter: none;
+}
+body.light-background .bookmarkTitle {
+    color: var(--dark1);
+    text-shadow: none;
+}
+body.light-background .bookmarkImage,
+body.light-background .engine-icon {
+    filter: none !important;
+}
+body.light-background input[type="search"] {
+    background-color: #f2f2f2;
+    color: var(--dark1);
+    border: 1px solid #d4d4d4;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.12)) !important;
+}
+body.dark-solid-background .bookmarkTitle,
+body.dark-solid-background #headingContainer {
+    text-shadow: none;
+}
+body.dark-solid-background #headerLogo,
+body.dark-solid-background #settingsSvg,
+body.dark-solid-background #deleteBinSvg,
+body.dark-solid-background .bookmarkImage,
+body.dark-solid-background .engine-icon {
+    filter: none !important;
+}
+body.dark-solid-background input[type="search"] {
+    filter: none !important;
+}
+
+/*Settings & Delete Bin Buttons*/
+
+#settingsPageButton.viewport-hidden {
+    display: none !important;
+}
+
+@media (max-width: 840px) {
+    #settingsPageButton {
+        display: none !important;
+    }
+}
+
+#settingsPageButton {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 23px;
+    right: 30px;
+    cursor: pointer;
+}
+#settingsSvg {
+    transform: scale(1.7);
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.65));
+}
+
+#deleteBinButton {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 23px;
+    left: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 400;
+}
+#deleteBinSvg {
+    transform: scale(1.7);
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.65));
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), fill 0.2s ease;
+}
+body.is-dragging #deleteBinButton,
+body.walkthrough-show-bin #deleteBinButton {
+    opacity: 1;
+    pointer-events: auto;
+}
+#deleteBinButton.bin-hover #deleteBinSvg {
+    transform: scale(2.1);
+    fill: #ff1f1f !important;
+    filter: drop-shadow(0 0 8px rgba(255, 31, 31, 0.85)) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.65)) !important;
+}
+
+/* Search Bars */
+
+#searchBarContainer {
+    position: relative;
+    height: 100vh;
+    height: 100dvh;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+#searchBarContainer::-webkit-scrollbar {
+    width: 8px;
+}
+#searchBarContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+#searchBarContainer::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+#searchBarContainer::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+#searchBars {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    min-height: min-content;
+    margin: auto;
+    width: 90vw;
+    max-width: 700px;
+    opacity: 1;
+}
+
+/* Home Clock Bar Widget (Structured identically to search bar inputContainer) */
+#container-clock_widget {
+    position: relative;
+    z-index: 200;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+body.no-clock #container-clock_widget {
+    display: none !important;
+}
+
+#homeClockBar {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    background: none;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    filter: none;
+    color: #ffffff;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+#clockTime,
+#clockDate {
+    font-family: 'tilt neon', var(--font);
+    font-size: 32pt;
+    font-weight: 500;
+    line-height: 1;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+#clockTime {
+    display: inline-flex;
+    align-items: center;
+    text-align: left;
+}
+
+#clockDate {
+    text-align: right;
+}
+
+.clockDigit {
+    display: inline-block;
+    width: 0.6em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-feature-settings: "tnum";
+    font-feature-settings: "tnum";
+}
+
+.clockColon {
+    display: inline-block;
+    width: 0.28em;
+    text-align: center;
+}
+
+.clockUnit {
+    display: inline-block;
+    letter-spacing: 0;
+}
+
+body.light-background #clockTime,
+body.light-background #clockDate {
+    color: var(--dark1);
+    text-shadow: none;
+}
+
+body.dark-solid-background #clockTime,
+body.dark-solid-background #clockDate {
+    text-shadow: none;
+}
+
+.engine-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
+}
+#container-browser_default .engine-icon {
+    cursor: pointer;
+}
+
+.bookmarkItemContainer,
+.bookmarkItemContainer * {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body.is-dragging,
+body.is-dragging * {
+    cursor: grabbing !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+.inputContainer.is-dragged-item {
+    opacity: 0.95 !important;
+    transform: scale(1.02);
+}
+
+.inputContainer.is-dragged-item.is-pending-delete,
+.inputContainer.is-pending-delete {
+    opacity: 0.5 !important;
+    transform: scale(0.6) !important;
+}
+
+.flying-mini-searchbar {
+    z-index: 300 !important;
+}
+
+.flying-mini-searchbar input[type="search"] {
+    width: 100%;
+    height: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 38px;
+    padding-right: 12px;
+    font-size: 10pt;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.flying-mini-searchbar .engine-icon {
+    width: 24px;
+    height: 24px;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.bookmarkItemContainer.is-dragged-item {
+    opacity: 0.95 !important;
+    transform: scale(1.08);
+    z-index: 300 !important;
+}
+
+@keyframes pinnedShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+#container-browser_default {
+    position: relative;
+    z-index: 150;
+}
+
+.inputContainer.pinned-shake {
+    animation: pinnedShake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.pinned-tooltip {
+    position: absolute;
+    left: 12px;
+    top: -34px;
+    background: rgba(20, 20, 20, 0.92);
+    color: #ffffff;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 250;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.pinned-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.drag-placeholder {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.inputContainer {
+    position: relative;
+    display: block;
+    width: 100%;
+    flex-shrink: 0;
+}
+input {
+    width: 100%;
+    border-radius: 50px;
+    border: none;
+    box-sizing: border-box;
+    font-size: inherit;
+    padding-top: 10pt;
+    padding-bottom: 10pt;
+    padding-left: 3.5em;
+    padding-right: 1em;
+    filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.5));
+}
+input::placeholder {
+    font-family: var(--font);
+}
+input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23777'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>")
+}
+input:focus {
+    outline: none;
+}
+
+/* Dual Column Bookmarks */
+
+#bookmarkContainerLeft, #bookmarkContainerRight {
+    position: fixed;
+    height: 100vh;
+    height: 100dvh;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+#bookmarkContainerLeft.top-bar-constrained,
+#bookmarkContainerRight.top-bar-constrained {
+    justify-content: flex-start;
+}
+#bookmarkAreaLeft, #bookmarkAreaRight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    min-width: var(--AIChatDiameter);
+    transition: margin-top 0.2s ease, max-height 0.2s ease;
+}
+.linkLeft {
+    left: 0;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    flex-direction: column;
+}
+.linkRight {
+    right: 0;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    flex-direction: column;
+}
+.bookmarkItemContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(var(--AIChatDiameter) - 15px);
+    width: var(--AIChatDiameter);
+    flex-shrink: 0;
+    min-height: 74px;
+}
+.dense-packing .bookmarkItemContainer {
+    height: auto;
+    min-height: 74px;
+    padding: 4px 0;
+}
+.dense-packing.hide-bookmark-titles .bookmarkItemContainer {
+    min-height: 48px;
+    padding: 3px 0;
+}
+.hide-bookmark-titles .bookmarkTitle {
+    display: none !important;
+}
+.bookmarkImage {
+    border-radius: 10px;
+    height: 42px;
+    width: 42px;
+    object-fit: cover;
+    filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.5)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));  
+}
+.bookmarkTitle {
+    width: 100px;
+    font-size: 11pt;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.65);    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 4px;
+    line-height: 1.25;
+}
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+}
+
+/* Interactive Onboarding Walkthrough */
+
+body.walkthrough-show-bookmarks .dynamicHide.hidden {
+    display: flex !important;
+}
+
+#walkthroughOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: auto;
+}
+
+#walkthroughBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    transition: opacity 0.25s ease;
+    pointer-events: auto;
+}
+
+#walkthroughSpotlight {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 14px;
+    border: 2px solid var(--green);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.72), 0 0 24px rgba(121, 186, 71, 0.6);
+    transition: top 0.28s cubic-bezier(0.2, 0, 0, 1),
+                left 0.28s cubic-bezier(0.2, 0, 0, 1),
+                width 0.28s cubic-bezier(0.2, 0, 0, 1),
+                height 0.28s cubic-bezier(0.2, 0, 0, 1),
+                border-radius 0.28s ease,
+                opacity 0.22s ease;
+    z-index: 510;
+}
+
+#walkthroughCard {
+    position: fixed;
+    z-index: 520;
+    width: 410px;
+    max-width: calc(100vw - 32px);
+    background-color: var(--dark1);
+    color: #ffffff;
+    border: 2px solid var(--dark3);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-sizing: border-box;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65);
+    text-align: left;
+    transition: top 0.28s cubic-bezier(0.2, 0, 0, 1),
+                left 0.28s cubic-bezier(0.2, 0, 0, 1),
+                transform 0.28s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.walkthroughHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.walkthroughStepBadge {
+    font-family: 'tilt neon', var(--font);
+    font-size: 10pt;
+    color: var(--green);
+    background: rgba(121, 186, 71, 0.14);
+    border: 1px solid rgba(121, 186, 71, 0.4);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.walkthroughSkipBtn {
+    background: transparent;
+    border: none;
+    color: #aaaaaa;
+    font-family: 'poppins', var(--font);
+    font-size: 9.5pt;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin: 0;
+    border-radius: 6px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.walkthroughSkipBtn:hover {
+    color: #ffffff;
+    background-color: var(--dark2);
+}
+
+.walkthroughTitle {
+    margin: 0 0 8px 0;
+    font-family: 'tilt neon', var(--font);
+    font-size: 16pt;
+    color: #ffffff;
+}
+
+.walkthroughBody {
+    margin: 0 0 18px 0;
+    font-family: 'poppins', var(--font);
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: #dddddd;
+}
+
+.walkthroughBody ul {
+    margin: 8px 0 0 0;
+    padding-left: 18px;
+}
+
+.walkthroughBody li {
+    margin-bottom: 5px;
+}
+
+.walkthroughBody kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    font-family: courier, monospace;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: var(--dark3);
+    border: 1px solid #666666;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+}
+
+.walkthroughFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.walkthroughDots {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.walkthroughDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--dark3);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.walkthroughDot.active {
+    background-color: var(--green);
+    transform: scale(1.25);
+}
+
+.walkthroughNavBtns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.walkthroughBtn {
+    margin: 0;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 2px solid;
+    font-family: var(--font);
+    font-size: 10pt;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.walkthroughBtnPrev {
+    background-color: var(--dark2);
+    border-color: var(--dark2) #1d1d1d #1d1d1d var(--dark2);
+}
+
+.walkthroughBtnPrev:active {
+    border-color: #1d1d1d var(--dark2) var(--dark2) #1d1d1d;
+}
+
+.walkthroughBtnNext {
+    background-color: var(--green);
+    border-color: var(--green) #517d2f #517d2f var(--green);
+}
+
+.walkthroughBtnNext:active {
+    border-color: #517d2f var(--green) var(--green) #517d2f;
+}

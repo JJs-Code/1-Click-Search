@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Settings: 1 Click Search</title>
+    <link rel="icon" type="image/svg+xml" href="Logo/Logo.svg">
+
+    <!--external files-->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/settings-background.css">
+    <link rel="stylesheet" href="css/settings-search.css">
+    <link rel="stylesheet" href="css/settings-general.css">
+</head>
+
+<body>
+    <!--settings page-->
+    <div id="sidebar">
+
+        <div class="sidebar" id="top-buttons">
+            <a id="logoContainer" href="main.html" style="cursor: pointer; text-decoration: none;">
+                <h1 style="display:flex; align-items:center; gap:10px; margin:0;">
+                    <svg id="headerLogo" class="innerHeading">
+                        <use href="icons/logo.svg#icon"></use>
+                    </svg>
+                    <span id="headerText" class="innerHeading">1 Click Search</span>
+                </h1>
+            </a>
+            <a class="buttonMenuBackground" id="buttonNavigationSearch" href="#search">
+                <svg class="buttonMenu icon">
+                    <use href="icons/search.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">Search</span>
+            </a>
+            <a class="buttonMenuBackground" id="buttonNavigationBookmarks" href="#bookmarks">
+                <svg class="buttonMenu icon">
+                    <use href="icons/bookmarks.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">Bookmarks</span>
+            </a>
+            <a class="buttonMenuBackground" id="buttonNavigationBackground" href="#background">
+                <svg class="buttonMenu icon">
+                    <use href="icons/backgrounds.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">Backgrounds</span>
+            </a>
+            <a class="buttonMenuBackground" id="buttonNavigationGeneral" href="#general">
+                <svg class="buttonMenu icon">
+                    <use href="icons/settings.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">General</span>
+            </a>
+        </div>
+
+        <div class="sidebar" id="bottom-buttons">
+            <a class="buttonMenuBackground" id="buttonNavigationFeedback" href="#feedback">
+                <svg class="buttonMenu icon">
+                    <use href="icons/feedback.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">Suggestions<br>& Feedback</span>
+            </a>
+
+            <a class="buttonMenuBackground" id="buttonNavigationExtensions" href="#exts">
+                <svg class="buttonMenu icon">
+                    <use href="icons/extensions.svg#icon"></use>
+                </svg>
+                <span class="menuTitle">Other Useful<br>Extensions</span>
+            </a>
+
+            <p id="version">Version 0.2.0</p>
+        </div>
+    </div>
+
+    <div id="canvas">
+        <!-- SEARCH SECTION -->
+        <section id="search">
+            <div class="anchor"></div>
+            <h2 class="page-title" id="searchTitle">Search Bars</h2>
+            <div class="verticalFlex">
+                <p class="page-instructions">
+                <span class="lineHeight2em">To add a new search:</span>
+                <br>1. Enter the search term "TESTSEARCH" without the quotes into the searchbar of any website
+                <br>2. Copy the full URL of the results page
+                <br>3. Click the 'Add New' button on this page, and paste the copied URL into the 'Site url' field.
+                <br>4. Add a name and hit 'Save'.</p>
+            </div>
+
+            <div id="actionButtonContainer" class="horizontalFlex">
+                <button type="button" class="button buttonGreen" id="addNewSearchButton">
+                    <svg class="icon">
+                        <use href="icons/add.svg#icon"></use>
+                    </svg>
+                    <span>Add New</span>
+                </button>
+                <button type="button" class="button buttonBlue" id="saveSearchButton">
+                    <svg class="icon">
+                        <use href="icons/save.svg#icon"></use>
+                    </svg>
+                    <span>Save</span>
+                </button>
+            </div>
+
+            <div id="searchMessageContainer"></div>
+
+            <!-- Pinned Browser Default Search Entry (Clean, non-draggable banner) -->
+            <div id="defaultBrowserSearchBanner" class="searchContainer defaultSearchBanner">
+                <div class="defaultSearchLeft">
+                    <img id="defaultSearchBannerIcon" class="defaultSearchIcon" src="" alt="">
+                    <span id="defaultSearchBannerTitle" class="defaultSearchTitle">Browser Default Search</span>
+                </div>
+                <div class="defaultSearchRight">
+                    <span id="defaultSearchBannerDesc">The first search bar uses your browser's default search engine. This is to comply with the Chrome Web Store Terms of Service. <br> You can manage this in your browser settings <a id="linkBrowserSettings" href="#">here</a></span>
+                    <button type="button" id="btnRedetectDefaultEngine" class="searchButton actionButton buttonGreen" title="redetect">
+                        <svg>
+                            <use href="icons/refresh.svg#icon"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="searchDataContainer"></div>     
+        </section>
+
+        <!-- BOOKMARKS SECTION -->
+        <section id="bookmarks">
+            <div class="anchor"></div>
+            <h2 class="page-title" id="bookmarkTitle">Bookmarks</h2>
+
+            <div id="bookmarkSides" class="horizontalFlex">
+                <button type="button" class="buttonSides" id="buttonSideLeft">Left</button>
+                <button type="button" id="buttonSidesSwap" title="Swap Left and Right Columns">
+                    <svg class="icon">
+                        <use href="icons/swap.svg#icon"></use>
+                    </svg>
+                </button>
+                <button type="button" class="buttonSides" id="buttonSideRight">Right</button>
+            </div>
+
+            <div id="bookmarkButtonContainer" class="horizontalFlex">
+                <button type="button" class="button buttonGreen" id="addNewBookmarkButton">
+                    <svg class="icon">
+                        <use href="icons/add.svg#icon"></use>
+                    </svg>
+                    <span>Add New</span>
+                </button>
+                <button type="button" class="button buttonBlue" id="saveBookmarkButton">
+                    <svg class="icon">
+                        <use href="icons/save.svg#icon"></use>
+                    </svg>
+                    <span>Save</span>
+                </button>
+            </div>
+
+            <div id="bookmarkMessageContainer"></div>
+            
+            <div id="bookmarkDataCanvas">
+                <div id="bookmarkDataContainerLeft"></div>
+                <div id="bookmarkDataContainerRight" class="hidden"></div>   
+            </div>
+        </section>
+
+        <!-- BACKGROUNDS SECTION -->
+        <section id="background">
+            <h2 class="page-title">Backgrounds</h2>
+            <p class="page-desc">Choose a solid colour, a specific photo, or cycle through random backgrounds.</p>
+
+            <div id="backgroundTopContainers">
+                <div class="backgroundContainer">
+                    <h1 class="backgroundHeading">Solid Backgrounds</h1>
+                    <div id="backgroundThumbnailsSolid">
+                        <div class="backgroundThumbnail" id="background-dark">
+                            <span class="solidTitle" id="title-dark">Dark</span>
+                        </div>
+                        <div class="backgroundThumbnail" id="background-light">
+                            <span class="solidTitle" id="title-light">Light</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="backgroundContainer">
+                    <h1 class="backgroundHeading">Random Image</h1>
+                    <div class="horizontalFlex" id="backgroundThumbnailsRandom">
+                        <div class="backgroundThumbnail" id="background-random">
+                            <div id="backgroundRandomBorder">
+                                <svg class="buttonMenu" id="randomIcon">
+                                    <use href="icons/random.svg#icon"></use>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="verticalFlexLeft" id="backgroundRandomSettings">
+                            <div id="selectBackgroundRefresh">
+                                <div class="radio">
+                                    <input type="radio" name="backgroundRandomOption" id="background-daily" checked>
+                                    <label for="background-daily">
+                                        <span class="randomOptions">Change once daily</span>
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="backgroundRandomOption" id="background-new-tab">
+                                    <label for="background-new-tab">
+                                        <span class="randomOptions">Change on new tab</span>
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <input type="radio" name="backgroundRandomOption" id="background-refresh">
+                                    <label for="background-refresh">
+                                        <span class="randomOptions">Change on refresh</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>       
+                    </div>
+                </div>
+
+                <div class="backgroundContainer" id="customBackgroundContainer">
+                    <h1 class="backgroundHeading">Custom Image</h1>
+                    <div class="horizontalFlex" id="backgroundThumbnailsCustom">
+                        <div class="backgroundThumbnail" id="background-custom" title="Custom image wallpaper">
+                            <div id="customBackgroundBorder">
+                                <span class="imageTitle" id="customBackgroundTitle">Custom</span>
+                            </div>
+                        </div>
+
+                        <div class="verticalFlexLeft" id="customBackgroundControls">
+                            <input type="url" id="customBackgroundInput" class="searchInput" placeholder="Paste image URL (https://...)">
+                            <div id="customBackgroundButtonsRow">
+                                <button type="button" id="buttonUploadCustomBg" class="button buttonBlue">
+                                    <span>Upload File</span>
+                                </button>
+                                <button type="button" id="buttonClearCustomBg" class="button buttonRed" title="Clear custom image">
+                                    <span>Clear</span>
+                                </button>
+                            </div>
+                            <input type="file" id="customBgFileInput" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="backgroundContainer" id="imageSelectContainer">
+                <h1 class="backgroundHeading">Select Image</h1>
+                <div id="backgroundThumbnailContainer"></div>
+            </div>
+        </section>
+
+        <!-- GENERAL SECTION -->
+        <section id="general">
+            <h2 class="page-title">General Options</h2>
+            <div id="settingsGeneralContainer" class="verticalFlexLeft">
+
+                <div class="verticalFlexLeft" style="width: 100%;">
+                    <p>Background blur intensity</p>
+                    <div class="blurControlContainer">
+                        <div class="flexSpaceBetween">
+                            <span>0%</span>
+                            <output for="blurSlider" id="blurValue">Current: 50%</output>
+                            <span>100%</span>
+                        </div>    
+                        <input type="range" id="blurSlider" label="blurSlider" title="blurSlider"></input>
+                        <div id="blurImageContainer">
+                            <img id="blurImage" src="https://raw.githubusercontent.com/JJs-Code/1-Click-Search/main/backgrounds/Treetops.jpg" alt="blur test image">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="generalTogglesGroup" id="generalSettingsTogglesGroup">
+                    <div class="horizontalFlexLeftCenter generalToggleRow">
+                        <label class="switch">
+                            <input type="checkbox" title="" class="on-off" id="showClockCheckbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Show Clock on Home Page</p>
+                        <div class="segmentedClockFormat" id="clockTimeFormatGroup">
+                            <button type="button" class="clockFormatBtn active" data-format="24h">24hr</button>
+                            <button type="button" class="clockFormatBtn" data-format="12h">12hr</button>
+                        </div>
+                    </div>
+
+                    <div class="horizontalFlexLeftCenter generalToggleRow">
+                        <label class="switch">
+                            <input type="checkbox" title="" class="on-off" id="showLogoCheckbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Show logo on home page</p>
+                    </div>
+
+                    <div class="horizontalFlexLeftCenter generalToggleRow">
+                        <label class="switch">
+                            <input type="checkbox" title="" class="on-off" id="deleteWarningCheckbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>Ask before deleting</p>
+                    </div>
+                </div>
+
+                <div class="verticalFlexLeft gap10" style="width: 100%;">
+                    <p class="margin0"><b>Walkthrough & Guide</b></p>
+                    <p class="margin0 bodyText">
+                        Take a quick interactive tour of the home page to learn how to switch between search bars, reorder items, drag to delete, and quickly access settings.
+                    </p>
+                    <button type="button" id="buttonStartWalkthrough">
+                        <svg>
+                            <use href="icons/walkthrough.svg#icon"></use>
+                        </svg>
+                        <span>Replay Walkthrough</span>
+                    </button>
+                </div>
+
+                <div class="verticalFlexLeft gap10">
+                    <p class="margin0"><b>Backup, Restore & Reset Settings</b></p>
+                    <p class="margin0 bodyText">
+                    Back up or transfer your searches, bookmarks, and preferences in one click. Export or import your live configuration using either your clipboard or a backup file.
+                    </p>
+                    <div id="generalButtonsRow">
+                        <div class="generalButtonColumn">
+                            <button type="button" id="buttonExportClipboard">
+                                <svg>
+                                    <use href="icons/clipboard.svg#icon"></use>
+                                </svg>
+                                <span>Export to Clipboard</span>
+                            </button>
+                            <button type="button" id="buttonExportFile">
+                                <svg>
+                                    <use href="icons/file-export.svg#icon"></use>
+                                </svg>
+                                <span>Export to File</span>
+                            </button>
+                        </div>
+                        <div class="generalButtonColumn">
+                            <button type="button" id="buttonImportSave">
+                                <svg>
+                                    <use href="icons/clipboard.svg#icon"></use>
+                                </svg>
+                                <span>Import from Clipboard</span>
+                            </button>
+                            <button type="button" id="buttonImportFile">
+                                <svg>
+                                    <use href="icons/file-import.svg#icon"></use>
+                                </svg>
+                                <span>Import from File</span>
+                            </button>
+                            <input type="file" id="importFileInput" accept=".txt,.json" class="hidden">
+                        </div>
+                        <button type="button" id="buttonResetAll">
+                            <svg>
+                                <use href="icons/delete-forever.svg#icon"></use>
+                            </svg>
+                            <span>Reset all settings to default</span>
+                        </button>
+                    </div>
+                    <div id="importExportTextarea" title="Live configuration preview"></div>
+                </div>
+            </div>            
+        </section>
+
+        <!-- SUGGESTIONS & FEEDBACK -->
+        <section id="feedback">
+            <h2 class="page-title">Suggestions & Feedback</h2>
+
+            <div class="feedback">
+                <div class="feedbackContainer">
+                    <h3 class="margin0">Suggestions & Bug Reporting</h3>
+                    <p class="margin0">Help improve this extension! get in touch with me using the support hub to report bugs and suggest new features</p>
+                    <a class="feedbackButton" target="_blank" href="https://chromewebstore.google.com/detail/npodgfdmhifnkabgfonfgepjibdjibpc/support">Support Hub</a>
+                </div>
+                <div class="feedbackIcon">🐞</div>
+            </div>
+
+            <div class="feedback">
+                <div class="feedbackContainer">
+                    <h3 class="margin0">Leave a Review</h3>
+                    <p class="margin0">Enjoying this extension? you can help by leaving a review</p>
+                    <a class="feedbackButton buttonGreen" target="_blank" href="https://chromewebstore.google.com/detail/npodgfdmhifnkabgfonfgepjibdjibpc/reviews">Reviews Page</a>
+                </div>
+                <div class="feedbackIcon">🌟</div>
+            </div>
+
+            <div class="feedback">
+                <div class="feedbackContainer">
+                    <h3 class="margin0">This Extension is Open Source</h3>
+                    <p class="margin0">View all the source code on my GitHub page below</p>
+                    <a class="feedbackButton buttonWhite" target="_blank" href="https://github.com/JJs-Code/1-Click-Search">
+                        <svg class="PayPalButton" viewBox="0 0 792 216">
+                            <use href="icons/github.svg#icon"></use>
+                        </svg>
+                    </a>
+                </div>
+                <div class="feedbackIcon">🔍</div>
+            </div>
+
+            <div class="feedback">
+                <div class="feedbackContainer">
+                    <h3 class="margin0">Donate</h3>
+                    <p class="margin0">This extension was a passion project & took hundreds of hours to write, if you're feeling generous, say thanks by sending me a coffee!</p>
+                    <a class="feedbackButton buttonWhite" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=F265ZF93NM7GN">
+                        <svg class="PayPalButton" viewBox="0 0 170 48">
+                            <use href="icons/paypal.svg#icon"></use>
+                        </svg>
+                    </a>
+                </div>
+                <div class="feedbackIcon">❤️</div>
+            </div>
+        </section>
+
+        <!-- EXTENSIONS SECTION -->
+        <section id="exts">
+            <div id="my-exts">
+                <h2 class="page-title">Extensions by me</h2>
+
+                <div class="cws-app">
+                    <svg class="cws-img" style="fill: #ffffff; flex-shrink: 0;">
+                        <use href="icons/logo.svg#icon"></use>
+                    </svg>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">1 Click Search</h1>
+                        <p class="cws-body">Multiple search bars on your home page, create search bars for any website imaginable</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/npodgfdmhifnkabgfonfgepjibdjibpc">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+            </div>
+
+            <h2>Extensions by other developers</h2>
+            <span>I have no affiliation with these extensions or their devs, I just think they're cool</span>
+            <div id="other-exts">
+                <div class="cws-app">
+                    <img class="cws-img bg-white" alt="icon missing" src="https://lh3.googleusercontent.com/yBPJ83IYp2ZmTkvVbT6W8K5XJit0RpTRiKk5XUR9vTUJbQArVNOlXYCGQrc4SF-5i9IfgBFKql4Fa1yNvXn5mofr1g=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Context Menu Search</h1>
+                        <p class="cws-body">Search the web for selected text using the search functionality on any website, all from the right-click menu</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/QxqnN-zIjR4zUVEdu_eX-kLMsapheOyvb_I19w2Qw25eQzMd18ecELJndPqyPDssy8glqGo5tVfjB4ThnLj22Nc_rkg=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Auto Group Tabs</h1>
+                        <p class="cws-body">Automatically arranges tabs into user-defined groups based on their URL</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/auto-group-tabs/danncghahncanipdoajmakdbeaophenb">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/m5IdUSqd-0vjxsxR8MaJhLBnyW3QjUMsXsdI_dwDn2n2-HRJXOnvGfBDXWDph1JOWa71mUtKoYoPRu2aqOrzpw_osQ=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Hover Zoom</h1>
+                        <p class="cws-body">Hover your mouse over an image on any website to see a full size preview</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/hover-zoom+/pccckmaobkjjboncdfnnofkonhgpceea">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/T66wTLk-gpBBGsMm0SDJJ3VaI8YM0Utr8NaGCSANmXOfb84K-9GmyXORLKoslfxtasKtQ4spDCdq_zlp_t3QQ6SI0A=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Dark Reader</h1>
+                        <p class="cws-body">Dark mode on any website, saves your eyes from being blinded by the default light mode most websites use</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/e7UkRkpAz9tddU7HbgO5KsRLqyNO3KMKmKDROqIZoWrVwvv8Ifbjak4-XyAgZJIkvq_SUBZY1dRtqKd7z1aLB4nS=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Last Tab Back</h1>
+                        <p class="cws-body">Pressing backspace, or the back button on your mouse, will close the current tab if there are no more pages to go back to</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/last-tab-back/oijipkokfkhgojikimbbcafnbppebnhe">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/RYW-UK2LBykg0T2H5FwivxoOkgH8_U91d7ZYbtuC5R9PLgjMP8-UYC7wjOhYiuqNbAxQ16ojzknvuCPYHUgagpBU=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Smooth Scroll</h1>
+                        <p class="cws-body">Makes scrolling with mouse and keyboard much smoother across the web</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/smoothscroll/nbokbjkabcmbfdlbddjidfmibcpneigj">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+                
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/QwwArjSBXFXl5WOajogwHY6_aYesPwC6GFNAO3PLqxW310k4uTEOhsDcxU9H9uHM8g1VGHX66nGGSOCdMm6tDrw4Ctw=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">Better Viewer</h1>
+                        <p class="cws-body">A superior, feature-full replacement to the default image viewing mode built into Chromium browsers</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/betterviewer/llcpfkbjgkpmapiidpnohffjmmnhpmpb">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+
+                <div class="cws-app">
+                    <img class="cws-img" alt="icon missing" src="https://lh3.googleusercontent.com/S9_5LRhxmhzkW2pLuFqvnXzrRSfyAr4msuEMDVbF2PPa4wYdZeeDIGM2u4oSBCvwMxh5-mBUWLq8H7FTeLouHYTD8Gc=s60"/>
+                    <div class="cws-text verticalFlex">
+                        <h1 class="cws-title">I still don't care about cookies</h1>
+                        <p class="cws-body">Removes the annoying cookie notification popups on most websites</p>
+                    </div>
+                    <a class="cws-btn" target="_blank" href="https://chromewebstore.google.com/detail/i-still-dont-care-about-c/edibdbjcniadpccecjdfdjjppcpchdlm">
+                        <img src="https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chromewebstore.google.com/detail/context-menu-search/ocpcmghnefmdhljkoiapafejjohldoga&size=40" alt=""/>
+                        <span class="cws-btn-text">Chrome Web Store</span>
+                    </a>
+                </div>
+            </div>        
+        </section>
+    </div>
+
+    <!--external scripts-->
+    <script src="js/reference.js"></script>
+    <script src="js/settings-background.js"></script>
+    <script src="js/settings-general.js"></script>
+    <script src="js/settings-search.js"></script>
+    <script src="js/settings-bookmark.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>
