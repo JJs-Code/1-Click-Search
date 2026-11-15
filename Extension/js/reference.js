@@ -1,4 +1,7 @@
-// version no
+// Shared Reference Utilities, Defaults, Favicon Resolver & Native Dialogs
+// Loaded in <head> on both main.html and settings.html before page-specific scripts.
+
+// Current extension version (displayed in settings.html#feedback / footer)
 const versionNo = '0.2.0';
 
 // Apply header & clock visibility class on <html> immediately before <body> renders to prevent flash
@@ -68,6 +71,7 @@ const defaultSubpathFavicons = {
     'maps.google.com':               'https://maps.gstatic.com/mapfiles/maps_lite/pwa/icons/icon_192x192.png'
 };
 
+/** Reads the cached domain -> favicon URL map from localStorage. */
 function getLearnedFaviconsMap() {
     try {
         const raw = localStorage.getItem('learnedFavicons');
@@ -79,6 +83,7 @@ function getLearnedFaviconsMap() {
     return {};
 }
 
+/** Saves a live tab's favicon URL by hostname (and first path segment) into localStorage. */
 function recordLearnedFaviconInLocalStorage(tabUrl, favIconUrl) {
     if (!tabUrl || !favIconUrl || typeof tabUrl !== 'string' || typeof favIconUrl !== 'string') return;
     if (!favIconUrl.startsWith('http://') && !favIconUrl.startsWith('https://')) return;
@@ -133,6 +138,7 @@ function recordLearnedFaviconInLocalStorage(tabUrl, favIconUrl) {
     }
 })();
 
+/** Extracts hostname, normalized domain, and first path segment (for bookmarks) from a URL or search template. */
 function parseFaviconTarget(urlOrDomain) {
     if (!urlOrDomain || typeof urlOrDomain !== 'string') return null;
     let trimmed = urlOrDomain.trim();
@@ -155,6 +161,12 @@ function parseFaviconTarget(urlOrDomain) {
     }
 }
 
+/**
+ * Loads a high-res favicon into `img` with multi-step fallbacks:
+ * 1. Special-cased domains (Google Search, Microsoft Copilot)
+ * 2. Learned live-tab or subpath favicons (e.g. docs.google.com/spreadsheets)
+ * 3. Google FaviconV2 service, rejecting blurry 16x16 generic globes in favor of direct /favicon.ico or placeholder SVG
+ */
 function loadFaviconWithFallback(img, urlOrDomain, size, fallbackSvg) {
     const target = parseFaviconTarget(urlOrDomain);
     if (!target || !target.hostname) {
@@ -287,6 +299,7 @@ function updateSettingsCardFavicon(cardElement) {
     loadFaviconWithFallback(img, target, 32, placeholderSvg);
 }
 
+/** Returns the Amazon search URL matching the user's browser locale/timezone. */
 function getLocalizedAmazonSearchUrl() {
     try {
         const lang = (navigator.language || '').toLowerCase();
@@ -340,7 +353,7 @@ const menuPages = {
     'exts':       'buttonNavigationExtensions'
 };
 
-// background images
+// Background image manifest & URL helpers (synced from GitHub with offline defaults)
 const BACKGROUNDS_BASE_URL = 'https://raw.githubusercontent.com/JJs-Code/1-Click-Search/main/backgrounds';
 const BACKGROUNDS_MANIFEST_URL = `${BACKGROUNDS_BASE_URL}/backgrounds.json`;
 const BACKGROUNDS_CACHE_KEY = 'cachedBackgroundList';
@@ -357,11 +370,13 @@ function normalizeBackgroundName(name) {
     return name;
 }
 
+/** Converts a raw background filename/entry into a clean card label (strips extension, underscores -> spaces). */
 function getBackgroundDisplayName(entry) {
     const clean = normalizeBackgroundName(entry || '');
     return clean.replace(/\.(jpe?g|png|webp|gif|avif)$/i, '').replace(/_/g, ' ');
 }
 
+/** Resolves a background entry into full-res and thumbnail GitHub raw URLs (defaults extensionless entries to .jpg). */
 function resolveBackgroundImageUrls(entry) {
     const clean = normalizeBackgroundName(entry || '');
     const hasExtension = /\.(jpe?g|png|webp|gif|avif)$/i.test(clean);
@@ -372,6 +387,7 @@ function resolveBackgroundImageUrls(entry) {
     };
 }
 
+/** Filters a remote background list to safe, unique, non-empty image filenames. */
 function sanitizeBackgroundList(rawList) {
     if (!Array.isArray(rawList)) return null;
     const cleaned = [];
@@ -388,6 +404,7 @@ function sanitizeBackgroundList(rawList) {
     return cleaned.length > 0 ? cleaned : null;
 }
 
+/** Returns the cached GitHub background list from localStorage, or the built-in defaults if offline/uninitialized. */
 function getBackgroundList() {
     try {
         const cached = localStorage.getItem(BACKGROUNDS_CACHE_KEY);
@@ -399,6 +416,7 @@ function getBackgroundList() {
     return defaultBackgrounds.slice();
 }
 
+/** Fetches the latest backgrounds/backgrounds.json from GitHub and updates the localStorage cache if changed. */
 async function fetchRemoteBackgroundList() {
     const currentList = getBackgroundList();
     try {
@@ -425,6 +443,7 @@ const solidBackgroundIds = {
     'background-light': '#FFFFFF'
 };
 
+/** Escapes HTML special characters for safe insertion inside attribute values. */
 function escapeHtmlAttr(str) {
     if (!str || typeof str !== 'string') return '';
     return str.replace(/&/g, '&amp;')
@@ -670,4 +689,35 @@ function showBrowserResetConfirm(onConfirm) {
 
     dialog.showModal();
     input.focus();
+}
+
+/**
+ * Focuses an existing Home (New Tab) tab if one is already open,
+ * or opens main.html in the current tab otherwise.
+ */
+function focusOrOpenHomeTab() {
+    if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.query && chrome.runtime && chrome.runtime.getURL) {
+        const homeUrl = chrome.runtime.getURL('main.html');
+        const isHomeTab = (t) => {
+            const tabUrl = t.url || t.pendingUrl || '';
+            return (
+                tabUrl.startsWith(homeUrl) ||
+                /^(chrome|edge|brave|vivaldi|opera):\/\/newtab\/?/i.test(tabUrl) ||
+                t.title === 'Home: 1 Click Search'
+            );
+        };
+        chrome.tabs.query({}, function(tabs) {
+            const existingTab = tabs && tabs.find(isHomeTab);
+            if (existingTab) {
+                chrome.tabs.update(existingTab.id, { active: true });
+                if (existingTab.windowId && chrome.windows) {
+                    chrome.windows.update(existingTab.windowId, { focused: true });
+                }
+            } else {
+                window.location.href = 'main.html';
+            }
+        });
+    } else {
+        window.location.href = 'main.html';
+    }
 }

@@ -1,4 +1,7 @@
-// Main Search & Bookmarks View Controller
+// Main Search & Bookmarks View Controller (Home Page)
+// Manages the live clock, pinned default search + custom search bars, keyboard shortcuts,
+// left/right bookmark columns, direct home-page drag-and-drop + delete bin, dynamic layout sizing,
+// cross-tab storage synchronization, and the interactive onboarding walkthrough.
 (function() {
     let searchUrls = defaultSearches;
     let rawSearchData = localStorage.getItem("searchData");
@@ -58,6 +61,7 @@
     const bookmarkContainerRight = document.getElementById('bookmarkContainerRight');
     let clockIntervalId          = null;
 
+    /** Toggles the 'no-header' class to show/hide the top logo on the Home page. */
     function applyHeaderVisibility() {
         const showLogoSetting = localStorage.getItem('showLogo');
         const isOff = showLogoSetting === '"off"' || showLogoSetting === 'off';
@@ -70,6 +74,7 @@
         }
     }
 
+    /** Shows/hides the Home clock and starts or stops its 1-second update interval accordingly. */
     function applyClockVisibility() {
         const showClockSetting = localStorage.getItem('showClock');
         const isOff = showClockSetting === '"off"' || showClockSetting === 'off';
@@ -91,6 +96,7 @@
         }
     }
 
+    /** Wraps each digit/colon in fixed-width spans so changing digits never shifts the time or date. */
     function formatTimeDigitHtml(timeString) {
         let html = '';
         for (let i = 0; i < timeString.length; i++) {
@@ -141,6 +147,7 @@
         }
     }
 
+    /** Dynamically scales down the clock font size on narrow viewports so time and date never collide. */
     function fitClockText() {
         const clockBar = document.getElementById('homeClockBar');
         const timeElem = document.getElementById('clockTime');
@@ -174,10 +181,10 @@
     applyClockVisibility();
     initialiseMainDashboard();
 
+    /** Renders (or re-renders) the entire Home dashboard: visibility, search bars, bookmarks, drag-and-drop, and heights. */
     function initialiseMainDashboard() {
         applyHeaderVisibility();
         applyClockVisibility();
-        applyBackgroundImageBlur();
         renderMainSearchBars(searchUrls);
         bookmarkAreaLeft.innerHTML = '';
         bookmarkAreaRight.innerHTML = '';
@@ -187,12 +194,6 @@
         attachMainBookmarkDragListeners(bookmarkAreaLeft, 'bookmarkLeftData');
         attachMainBookmarkDragListeners(bookmarkAreaRight, 'bookmarkRightData');
         updateAllContainerHeights();
-    }
-
-    function applyBackgroundImageBlur() {
-        const bgImage = document.getElementById('backgroundImage');
-        const blur = localStorage.getItem('blurIntensity') || 4;
-        bgImage.style.filter = `blur(${blur}px)`;
     }
 
     function getConfirmedDefaultEngine() {
@@ -206,30 +207,7 @@
         return null;
     }
 
-    function resolveSearchEngineFromUrl(urlString) {
-        try {
-            const url = new URL(urlString);
-            const host = url.hostname.toLowerCase();
-            if (host.includes('google.')) return { name: 'Google', domain: 'google.com' };
-            if (host.includes('bing.com')) return { name: 'Bing', domain: 'bing.com' };
-            if (host.includes('duckduckgo.com')) return { name: 'DuckDuckGo', domain: 'duckduckgo.com' };
-            if (host.includes('brave.com')) return { name: 'Brave Search', domain: 'search.brave.com' };
-            if (host.includes('yahoo.com')) return { name: 'Yahoo', domain: 'search.yahoo.com' };
-            if (host.includes('ecosia.org')) return { name: 'Ecosia', domain: 'ecosia.org' };
-            if (host.includes('kagi.com')) return { name: 'Kagi', domain: 'kagi.com' };
-            if (host.includes('yandex.')) return { name: 'Yandex', domain: 'yandex.com' };
-            if (host.includes('startpage.com')) return { name: 'Startpage', domain: 'startpage.com' };
-            if (host.includes('baidu.com')) return { name: 'Baidu', domain: 'baidu.com' };
-            if (host.includes('qwant.com')) return { name: 'Qwant', domain: 'qwant.com' };
-            
-            const cleanName = host.replace(/^www\./, '').split('.')[0];
-            const capitalized = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-            return { name: capitalized, domain: host };
-        } catch(e) {
-            return null;
-        }
-    }
-
+    /** Creates and inserts the live clock bar above the search stack (left-click -> Search Settings, right-click -> General). */
     function renderClockBar() {
         const showClockSetting = localStorage.getItem('showClock');
         if (showClockSetting === '"off"' || showClockSetting === 'off') {
@@ -270,6 +248,7 @@
         searchBarsElement.appendChild(clockContainer);
     }
 
+    /** Creates the permanently pinned Browser Default search bar at the top of the search stack. */
     function renderBrowserDefaultBar(confirmedDefault) {
         const displayName = confirmedDefault ? confirmedDefault.name : 'Browser Default';
         const inputContainer = document.createElement("div");
@@ -299,6 +278,7 @@
         inputContainer.appendChild(anchor);
     }
 
+    /** Builds the clock bar, pinned default search bar, and all enabled custom search bars. */
     function renderMainSearchBars(data) {
         searchBarsElement.innerHTML = '';
 
@@ -398,6 +378,7 @@
         }
     }
 
+    /** Renders all enabled bookmark tiles into either the left or right bookmark column. */
     function renderMainBookmarks(container, data) {
         if (!data || !container) return;
         const entries = Object.entries(data);
@@ -421,6 +402,7 @@
         }
     }
 
+    // Keyboard shortcuts inside search bars: Esc (clear/blur), Up/Down (switch bars & carry text), Enter (URL or search)
     searchBarsElement.addEventListener("keydown", function (submitEvent) {
         if (submitEvent.key === "Escape" && submitEvent.target.tagName === "INPUT" && submitEvent.target.type === "search") {
             submitEvent.preventDefault();
@@ -531,6 +513,7 @@
         });
     });
 
+    /** Hides side bookmark columns, logo, or settings icon when the viewport becomes too narrow to avoid overlaps. */
     function handleDynamicHide() {
         const hideItems = document.querySelectorAll(".dynamicHide");
         hideItems.forEach(element => {
@@ -594,9 +577,6 @@
             if (timeElem) timeElem._lastTimeHtml = '';
             updateClockDisplay();
             fitClockText();
-        }
-        if (e.key === 'blurIntensity') {
-            applyBackgroundImageBlur();
         }
         if (e.key === 'searchData' || e.key === 'schData') {
             const raw = localStorage.getItem('searchData') || localStorage.getItem('schData');
@@ -765,6 +745,7 @@
 
     let pinnedTooltipTimeout = null;
     let lastPinnedFeedbackTime = 0;
+    /** Shows a shake + tooltip when the user tries to drag or move past the pinned Browser Default bar. */
     function showPinnedFeedback(card) {
         if (!card) return;
         const now = Date.now();
@@ -794,6 +775,7 @@
         }, 1600);
     }
 
+    /** Enables pointer-based reordering and left-zone bin deletion for search bars on the Home page. */
     function attachMainSearchDragListeners() {
         if (searchBarsElement._hasMainDragListeners) return;
         searchBarsElement._hasMainDragListeners = true;
@@ -1217,6 +1199,7 @@
         });
     }
 
+    /** Focuses an existing Settings tab (navigating to `sectionHash`) or opens settings.html in a new tab. */
     function openSettingsPage(sectionHash, bookmarkSide) {
         if (bookmarkSide) {
             localStorage.setItem('activeBookmarkSide', bookmarkSide);
@@ -1563,6 +1546,7 @@
         }
     });
 
+    /** Hides the Home clock automatically when vertical space becomes too tight for search bars. */
     function checkClockSearchBarsGap() {
         const clockWidget = document.getElementById('container-clock_widget');
         if (!clockWidget) return;
@@ -1613,6 +1597,7 @@
         container.style.height = '';
     }
 
+    /** Centers bookmark columns on tall screens and switches to dense packing / hidden titles when space is tight. */
     function setDynamicBookmarkHeight(elementId) {
         const container = document.getElementById(elementId);
         if (!container) return;
@@ -1684,6 +1669,7 @@
 
     // --- Interactive Onboarding Walkthrough ---
 
+    /** Launches the step-by-step spotlight walkthrough overlay on the Home page. */
     function startMainWalkthrough() {
         const existingOverlay = document.getElementById('walkthroughOverlay');
         if (existingOverlay) existingOverlay.remove();

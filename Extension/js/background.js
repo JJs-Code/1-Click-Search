@@ -1,5 +1,14 @@
 // Background Service Worker for 1 Click Search
+// Handles:
+// 1. Detecting the user's browser default search engine
+// 2. Updating the toolbar icon to match dark/light browser themes
+// 3. Opening or focusing the Home tab when the toolbar icon is clicked
+// 4. Learning favicons from visited tabs for use on the Home/Settings pages
 
+/**
+ * Extracts a friendly search engine name and root domain from a search result URL.
+ * Used after running a probe query or user search to identify the browser's default engine.
+ */
 function resolveSearchEngineFromUrl(urlString) {
     try {
         if (!urlString || typeof urlString !== 'string') return null;
@@ -34,15 +43,18 @@ function resolveSearchEngineFromUrl(urlString) {
     }
 }
 
-// Automatically detect default engine on first launch/install using an inactive background probe
+// Automatically detect default engine on first launch/install using an inactive background probe.
+// Because Chrome's `search` API doesn't expose the default engine name directly, this opens a hidden
+// background tab, runs a test search, reads the resulting URL, and immediately closes the tab.
 function autoDetectDefaultSearchEngine() {
     chrome.storage.local.get(['confirmedDefaultSearch', 'autoDetectInProgress'], (data) => {
+        // Skip if we already know the engine or another detection attempt ran within the last 10s
         if (data.confirmedDefaultSearch && data.confirmedDefaultSearch.name) return;
         if (data.autoDetectInProgress && (Date.now() - data.autoDetectInProgress < 10000)) return;
 
         chrome.storage.local.set({ autoDetectInProgress: Date.now() });
 
-        // Open an inactive tab in the background
+        // Open an inactive tab in the background so it doesn't steal focus
         chrome.tabs.create({ url: 'about:blank', active: false }, (tab) => {
             if (chrome.runtime.lastError || !tab || !tab.id) {
                 chrome.storage.local.set({ autoDetectInProgress: null });
@@ -61,8 +73,10 @@ function autoDetectDefaultSearchEngine() {
                 });
             };
 
+            // Force-close the probe tab after 5 seconds if no search redirect is observed
             const safetyTimeout = setTimeout(closeTab, 5000);
 
+            // Watch the probe tab until it navigates away from about:/chrome: to the search engine URL
             const probeListener = (tabId, changeInfo, updatedTab) => {
                 if (tabId !== targetTabId) return;
                 const url = changeInfo.url || updatedTab?.url;
@@ -99,6 +113,9 @@ function autoDetectDefaultSearchEngine() {
     });
 }
 
+/**
+ * Switches the extension toolbar icon between White (for dark browser UI) and Black (for light UI).
+ */
 function updateToolbarIcon(isDark) {
     const variant = isDark ? 'White' : 'Black';
     chrome.action.setIcon({
@@ -110,10 +127,14 @@ function updateToolbarIcon(isDark) {
             "256": chrome.runtime.getURL(`Logo/Logo_${variant}_256x256.png`)
         }
     }, () => {
+        // Ignore harmless errors if the action icon isn't ready yet
         if (chrome.runtime.lastError) {}
     });
 }
 
+/**
+ * Restores the last known browser theme icon when the service worker wakes up.
+ */
 function restoreStoredToolbarIcon() {
     chrome.storage.local.get(['browserThemeIsDark'], (data) => {
         const isDark = typeof data.browserThemeIsDark === 'boolean' ? data.browserThemeIsDark : true;
@@ -178,7 +199,10 @@ chrome.action.onClicked.addListener(() => {
     });
 });
 
-// User-initiated search detection and dynamic tab favicon learning
+// User-initiated search detection and dynamic tab favicon learning.
+// Whenever a tab updates, we:
+// 1. Cache the site's favicon URL by hostname (and first path segment) for offline/fallback icon lookup
+// 2. If the user just submitted a default-engine search, inspect the destination URL to confirm the engine
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const currentUrl = changeInfo.url || tab?.url;
     const favIconUrl = changeInfo.favIconUrl || tab?.favIconUrl;

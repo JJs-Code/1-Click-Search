@@ -1,4 +1,7 @@
-// General Settings Controller (Blur, Toggles, Import/Export)
+// General Settings Controller
+// Manages the blur intensity slider, home/delete toggles, 12h/24h clock format selector,
+// full-config JSON Import/Export (clipboard & file), walkthrough replay, and settings reset.
+
 const blurSlider = document.getElementById('blurSlider');
 const blurOutput = document.getElementById('blurValue');
 const blurImage  = document.getElementById('blurImage');
@@ -20,6 +23,7 @@ if (blurSlider) {
 }
 
 // Settings Toggle Helper
+// Binds a checkbox toggle to a localStorage key ('on' / 'off') and refreshes the export preview on change.
 const settingsListeners = {};
 function setupSettingToggle(elementId, storageKey, defaultValue = 'on') {
     const toggle = document.getElementById(elementId);
@@ -66,6 +70,7 @@ function setupAllToggles() {
     setupClockFormatSelector();
 }
 
+/** Initializes the 12hr / 24hr segmented buttons and hides them when the Home Clock is turned off. */
 function setupClockFormatSelector() {
     const group = document.getElementById('clockTimeFormatGroup');
     if (!group) return;
@@ -111,6 +116,7 @@ const buttonExportFile      = document.getElementById('buttonExportFile');
 const buttonImportFile      = document.getElementById('buttonImportFile');
 const importFileInput       = document.getElementById('importFileInput');
 
+/** Collects all General and Background settings into a single object for export. */
 function getGeneralSettingsObj() {
     let blur = localStorage.getItem('blurIntensity');
     blur = blur !== null ? parseFloat(blur) : 4;
@@ -156,6 +162,11 @@ function getGeneralSettingsObj() {
     };
 }
 
+/**
+ * Builds the pipe-delimited export string:
+ *   searches | leftBookmarks | rightBookmarks | generalSettings
+ * and displays it in the read-only import/export preview box.
+ */
 function populateImportExportField() {
     if (!importExportBox) return;
     let searchDataObj = null;
@@ -250,7 +261,8 @@ if (buttonImportFile && importFileInput) {
     });
 }
 
-// Import logic with auto-conversion of SEARCHTEXT -> TESTSEARCH, 2-part -> 3-part layout, and optional 4th part for General Settings
+// Import logic with auto-conversion of SEARCHTEXT -> TESTSEARCH, 2-part -> 3-part layout, and optional 4th part for General Settings.
+// Validates every JSON segment before writing anything to localStorage so invalid input never corrupts settings.
 function processImport(rawInput) {
     if (!rawInput || !rawInput.trim()) {
         showBrowserAlert('No data to import. Please copy your export data first.');
@@ -419,44 +431,23 @@ if (buttonStartWalkthrough) {
     buttonStartWalkthrough.addEventListener('click', function() {
         localStorage.removeItem('walkthroughCompleted');
         localStorage.setItem('startWalkthrough', Date.now().toString());
-        if (typeof chrome !== 'undefined' && chrome.tabs && chrome.runtime && chrome.runtime.getURL) {
-            const homeUrl = chrome.runtime.getURL('main.html');
-            const isHomeTab = (t) => {
-                const tabUrl = t.url || t.pendingUrl || '';
-                return (
-                    tabUrl.startsWith(homeUrl) ||
-                    /^(chrome|edge|brave|vivaldi|opera):\/\/newtab\/?/i.test(tabUrl) ||
-                    t.title === 'Home: 1 Click Search'
-                );
-            };
-            chrome.tabs.query({}, function(tabs) {
-                const existingTab = tabs && tabs.find(isHomeTab);
-                if (existingTab) {
-                    chrome.tabs.update(existingTab.id, { active: true });
-                    if (existingTab.windowId && chrome.windows) {
-                        chrome.windows.update(existingTab.windowId, { focused: true });
-                    }
-                } else {
-                    window.location.href = 'main.html';
-                }
-            });
-        } else {
-            window.location.href = 'main.html';
-        }
+        focusOrOpenHomeTab();
     });
 }
 
 // Reset all settings
 const buttonResetAll = document.getElementById('buttonResetAll');
-buttonResetAll.addEventListener('click', function() {
-    showBrowserResetConfirm(() => {
-        localStorage.clear();
-        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-            chrome.storage.local.clear(() => {
+if (buttonResetAll) {
+    buttonResetAll.addEventListener('click', function() {
+        showBrowserResetConfirm(() => {
+            localStorage.clear();
+            if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                chrome.storage.local.clear(() => {
+                    location.reload();
+                });
+            } else {
                 location.reload();
-            });
-        } else {
-            location.reload();
-        }
+            }
+        });
     });
-});
+}

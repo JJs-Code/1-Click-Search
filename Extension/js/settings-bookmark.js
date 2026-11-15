@@ -1,4 +1,7 @@
 // Bookmark Settings Controller (Left and Right columns)
+// Manages adding, editing, reordering, toggling, swapping, and deleting bookmarks
+// across the left and right columns shown on the Home page.
+
 const bookmarkDataContainerLeft  = document.getElementById('bookmarkDataContainerLeft');
 const bookmarkDataContainerRight = document.getElementById('bookmarkDataContainerRight');
 let activeBookmarkSide           = 'left';
@@ -7,6 +10,7 @@ const buttonSideLeft             = document.getElementById('buttonSideLeft');
 const buttonSideRight            = document.getElementById('buttonSideRight');
 const buttonSidesSwap            = document.getElementById('buttonSidesSwap');
 
+/** Reads a bookmark column from localStorage, migrating legacy bmLeftData/bmRightData keys if present. */
 function safeGetBookmarks(key, defaultData) {
     try {
         let raw = localStorage.getItem(key);
@@ -30,6 +34,7 @@ function safeGetBookmarks(key, defaultData) {
 
 initialiseBookmarkSettings();
 
+/** Initializes both bookmark columns, wires tab/swap/add/save controls, and enables drag-and-drop. */
 function initialiseBookmarkSettings() {
     let leftBookmarksData  = safeGetBookmarks('bookmarkLeftData', defaultLeftBookmarks);
     let rightBookmarksData = safeGetBookmarks('bookmarkRightData', defaultRightBookmarks);
@@ -49,6 +54,7 @@ function initialiseBookmarkSettings() {
     attachBookmarkDragListeners(bookmarkDataContainerRight, 'bookmarkRightData');
 }
 
+/** Loads the card's favicon and debounces live icon updates as the user edits its URL. */
 function setupBookmarkCardFavicon(card) {
     if (typeof updateSettingsCardFavicon === 'function') {
         updateSettingsCardFavicon(card);
@@ -67,6 +73,7 @@ function setupBookmarkCardFavicon(card) {
     }
 }
 
+/** Renders all bookmark cards for a single column (left or right). */
 function renderBookmarkSide(container, data) {
     container.innerHTML = '';
     const entries = Object.entries(data);
@@ -102,6 +109,7 @@ function removeBookmarkMessage(messageId) {
     if (el) el.remove();
 }
 
+/** Validates all cards in the given column(s) for empty fields, invalid URLs, or duplicate names. */
 function validateAndCheckBookmarks(containerToCheck) {
     const containers = containerToCheck ? [containerToCheck] : [bookmarkDataContainerLeft, bookmarkDataContainerRight];
     let hasEmpty = false;
@@ -149,6 +157,7 @@ function validateAndCheckBookmarks(containerToCheck) {
     return { hasEmpty, hasBadUrl, hasDuplicate };
 }
 
+/** Runs validation across both columns and saves to localStorage if there are no errors. */
 function checkAndSaveBookmarks() {
     let errorCount = 0;
     const { hasEmpty, hasBadUrl, hasDuplicate } = validateAndCheckBookmarks();
@@ -183,6 +192,7 @@ function checkAndSaveBookmarks() {
     }
 }
 
+/** Switches the visible column tab in Bookmark Settings ('left' or 'right'). */
 function setActiveBookmarkSideTab(side) {
     if (side === 'right') {
         activeBookmarkSide = 'right';
@@ -264,6 +274,7 @@ function setupBookmarkNavigation() {
     });
 }
 
+/** Serializes all bookmark cards in a column into localStorage and refreshes the export preview. */
 function saveBookmarksToStorage(container, storageKey) {
     const data = {};
     container.querySelectorAll('.bookmarkContainer').forEach(card => {
@@ -313,6 +324,7 @@ function attachBookmarkCardEvents(container, storageKey) {
     });
 }
 
+/** Attaches pointer-based vertical drag-and-drop reordering with FLIP sibling animation for a column. */
 function attachBookmarkDragListeners(container, storageKey) {
     container._storageKey = storageKey;
     if (container._hasDragListeners) return;

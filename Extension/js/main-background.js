@@ -1,7 +1,11 @@
-// Background Manager
+// Background Manager (Home Page)
+// Runs immediately after #backgroundImage is parsed so the wallpaper appears on the very first paint.
+// Supports solid colors, custom uploaded/linked images, specific GitHub wallpapers, and random rotation
+// (daily at 3 AM, per new tab, or per refresh), plus local preview caching and background preloading.
 (function() {
     const bgImageElem = document.getElementById('backgroundImage');
 
+    /** Applies the user's saved blur radius (default 4px) to the background container. */
     function applyBlurIntensity() {
         if (!bgImageElem) return;
         const blur = localStorage.getItem('blurIntensity') ?? 4;
@@ -9,6 +13,10 @@
         bgImageElem.style.filter = `blur(${blur}px)`;
     }
 
+    /**
+     * Reads the random-rotation mode ('background-daily', 'background-new-tab', or 'background-refresh'),
+     * migrating the legacy 'selectedRandOption' key if found.
+     */
     function getRandomSettingOption() {
         let option = localStorage.getItem('selectedRandomOption');
         if (option === null) {
@@ -31,6 +39,10 @@
         }
     } catch (e) {}
 
+    /**
+     * Downscales a loaded wallpaper to a 720px-wide JPEG data URL in localStorage so subsequent
+     * page loads render an instant preview while the full-resolution image loads in the background.
+     */
     function cacheBackgroundPreview(cleanSource, imgElement) {
         const cacheKey = `backgroundPreviewV2_${cleanSource}`;
         if (localStorage.getItem(cacheKey)) return;
@@ -67,6 +79,10 @@
         }
     }
 
+    /**
+     * Sets the background image from GitHub (layered over any cached local preview for instant display)
+     * and generates a cached preview if one does not yet exist.
+     */
     function setBackgroundSource(source) {
         const cleanSource = normalizeBackgroundName(source);
         const { fullUrl: url } = resolveBackgroundImageUrls(cleanSource);
@@ -99,6 +115,10 @@
         testImg.src = url;
     }
 
+    /**
+     * Master entry point: reads selectedBackground from localStorage and applies either random mode,
+     * a solid light/dark color, a custom user image, or a named GitHub wallpaper.
+     */
     function applyBackground(isInitialLoad) {
         applyBlurIntensity();
         let storedBackground = normalizeBackgroundName(localStorage.getItem('selectedBackground') || 'background-random');
@@ -166,6 +186,7 @@
         });
     }
 
+    /** Executes the selected random wallpaper rotation strategy (daily, per new tab, or per refresh). */
     function executeBackgroundBehavior(setting, isInitialLoad) {
         const dailyBackground = normalizeBackgroundName(localStorage.getItem('dailyBackground'));
         const sessionBackground = normalizeBackgroundName(sessionStorage.getItem('sessionBackground'));
@@ -203,6 +224,7 @@
         }
     }
 
+    /** Picks a random wallpaper from the cached/remote list and saves it for daily & session reuse. */
     function selectRandomBackground() {
         const backgroundList = getBackgroundList();
         const randomIndex = Math.floor(Math.random() * backgroundList.length);
@@ -212,6 +234,7 @@
         setBackgroundSource(randomBg);
     }
 
+    /** Returns true if the daily wallpaper has not yet rotated since the most recent 3:00 AM boundary. */
     function isDailyBackgroundChangeDue() {
         let storedDate = localStorage.getItem('dateChange');
         let currentDate = new Date();

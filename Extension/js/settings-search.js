@@ -1,4 +1,7 @@
 // Search Settings Controller
+// Manages the pinned Browser Default Search banner and custom search engine cards
+// (rendering, live favicon preview, validation, toggling, deletion, and drag-and-drop reordering).
+
 const searchDataContainer = document.getElementById('searchDataContainer');
 let firstSearchChild      = searchDataContainer ? searchDataContainer.querySelector('div.searchContainer') : null;
 function getDeleteWarningSetting() {
@@ -69,6 +72,7 @@ function runSearchListeners() {
     searchDragAndDropListeners();
 }
 
+/** Initializes the search settings view, migrating legacy data and removing any legacy Browser Default entry. */
 function initialiseSearchSettings() {
     if (!storedSearchData) {
         localStorage.setItem('searchData', JSON.stringify(defaultSearches));
@@ -86,6 +90,10 @@ function initialiseSearchSettings() {
     updateAllSearchSettings();
 }
 
+/**
+ * Renders search engine cards from `obj` (inserting in reverse at the top so the stored order
+ * is preserved top-to-bottom), and wires up debounced favicon previews as URLs are edited.
+ */
 function renderSearchContainers(obj) {
     if (!obj) return;
     const entries = Object.entries(obj).reverse();
@@ -124,6 +132,7 @@ function renderSearchContainers(obj) {
     });
 }
 
+/** Updates the pinned Browser Default Search banner title and favicon from confirmedDefaultSearch. */
 function updateDefaultSearchBanner() {
     const iconImg = document.getElementById('defaultSearchBannerIcon');
     const titleSpan = document.getElementById('defaultSearchBannerTitle');
@@ -180,6 +189,7 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
     }
 }
 
+/** Opens the browser's built-in search engine settings page when the banner link is clicked. */
 function attachBrowserSettingsLinkListener() {
     const link = document.getElementById('linkBrowserSettings');
     if (link) {
@@ -194,6 +204,7 @@ function attachBrowserSettingsLinkListener() {
     }
 }
 
+/** Wires up the "Re-detect" button to ask the background worker to re-probe the default search engine. */
 function attachRedetectDefaultEngineListener() {
     const redetectBtn = document.getElementById('btnRedetectDefaultEngine');
     if (redetectBtn) {
@@ -215,6 +226,7 @@ function attachRedetectDefaultEngineListener() {
     }
 }
 
+/** Validates all search engine cards (empty fields, invalid syntax, duplicate names) and saves if valid. */
 function checkAndSaveSearches() {
     let errorCount = 0;
     const { badName, badUrl } = checkBadSyntax();
@@ -495,6 +507,7 @@ function searchOnOffListeners() {
     });
 }
 
+/** Attaches pointer-based vertical drag-and-drop reordering with FLIP sibling animation. */
 function searchDragAndDropListeners() {
     if (searchDataContainer._hasDragListeners) return;
     searchDataContainer._hasDragListeners = true;

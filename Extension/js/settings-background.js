@@ -1,4 +1,11 @@
 // Background Settings Controller
+// Renders the selectable wallpaper grid in settings.html#background, syncs random-mode radio
+// buttons, and manages custom image URLs / local file uploads.
+
+/**
+ * Attaches click handlers to all background cards so clicking selects and saves that option,
+ * and highlights whichever card is currently active.
+ */
 function selectActiveBackground(className) {
     const toggles = document.querySelectorAll(className);
     toggles.forEach(el => {
@@ -30,6 +37,7 @@ function saveBackgroundSelection(background) {
     localStorage.setItem('selectedBackground', background);
 }
 
+/** Renders the thumbnail cards for all available wallpapers into #backgroundThumbnailContainer. */
 function renderBackgroundThumbnails(backgroundList) {
     const container = document.getElementById('backgroundThumbnailContainer');
     if (!container) return;
@@ -68,6 +76,7 @@ if (randomThumbsContainer) {
     });
 }
 
+/** Restores the saved random-rotation frequency radio button (daily / new tab / refresh). */
 function restoreBackgroundRadioOption() {
     let selectedId = localStorage.getItem('selectedRandomOption');
     if (selectedId === null) {
@@ -83,6 +92,7 @@ function restoreBackgroundRadioOption() {
     }
 }
 
+/** Wires up the custom background URL input, local file upload button, and clear button. */
 function setupCustomBackgroundControls() {
     const customCard  = document.getElementById('background-custom');
     const customInput = document.getElementById('customBackgroundInput');
