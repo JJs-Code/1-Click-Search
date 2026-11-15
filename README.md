@@ -53,5 +53,4 @@ A clean, customizable New Tab page for Chrome that puts all your favorite search
 
 ## Links
 
-- **GitHub:** https://github.com/JJs-Code/1-Click-Search
 - **Chrome Web Store:** https://chromewebstore.google.com/detail/npodgfdmhifnkabgfonfgepjibdjibpc
