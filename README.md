@@ -36,7 +36,7 @@ A clean, customizable New Tab page for Chrome that puts all your favorite search
    ```
 2. Open Chrome (or Edge/Brave) and go to `chrome://extensions`.
 3. Turn on **Developer mode** in the top-right corner.
-4. Click **Load unpacked** and select the **`Extension`** folder inside the downloaded repository.
+4. Click **Load unpacked** and select the **`extension`** folder inside the downloaded repository.
 5. Open a new tab to start using **1 Click Search**.
 
 ---
