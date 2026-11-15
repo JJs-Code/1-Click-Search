@@ -2,6 +2,8 @@
 
 A clean, customizable New Tab page for Chrome that puts all your favorite search bars, a live clock, and your bookmarks in one place.
 
+![1 Click Search Home Page](screenshots/Home%20Page.png)
+
 ---
 
 ## What It Does
@@ -34,8 +36,18 @@ A clean, customizable New Tab page for Chrome that puts all your favorite search
    ```
 2. Open Chrome (or Edge/Brave) and go to `chrome://extensions`.
 3. Turn on **Developer mode** in the top-right corner.
-4. Click **Load unpacked** and select the downloaded folder.
+4. Click **Load unpacked** and select the **`Extension`** folder inside the downloaded repository.
 5. Open a new tab to start using **1 Click Search**.
+
+---
+
+## Screenshots
+
+### Search Settings
+![Search Settings](screenshots/Search%20Settings.png)
+
+### Backgrounds
+![Backgrounds](screenshots/Backgrounds.png)
 
 ---
 
